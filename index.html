@@ -430,9 +430,16 @@ async function cloudGet(key) {
 }
 async function cloudSet(key, val) {
   try {
-    const url = `${API_URL}?action=set&key=${encodeURIComponent(key)}&value=${encodeURIComponent(JSON.stringify(val))}`;
-    await fetch(url);
-  } catch(e) { console.error('cloudSet error',e); }
+    const body = new URLSearchParams({action:'set', key, value: JSON.stringify(val)});
+    const r = await fetch(API_URL, {method:'POST', body});
+    const json = await r.json();
+    if(!json.ok) throw new Error(json.value||'Error desconocido');
+    return json;
+  } catch(e) {
+    console.error('cloudSet error',e);
+    setSyncUI('err','Error al guardar: '+e.message);
+    throw e;
+  }
 }
 
 // ── CONSTANTS ──────────────────────────────────────────
