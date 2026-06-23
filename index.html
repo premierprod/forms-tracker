@@ -176,44 +176,12 @@
   .sb-il { background: #e3f2fd; color: #1565c0; }
   .sb-dmv { background: #f3e5f5; color: #6a1b9a; }
   .sb-fl { background: #fff3e0; color: #e65100; }
-  .sb-other { background: #f1f8e9; color: #33691e; }
   .edit-link { font-size: 11px; color: #bbb; cursor: pointer; margin-left: 6px; transition: color 0.12s; }
   .edit-link:hover { color: #1a1a1a; }
-  .btn-add-form { font-size: 11px; color: #aaa; background: none; border: 1px dashed #ddd; border-radius: 6px; cursor: pointer; font-family: 'Inter', sans-serif; padding: 5px 10px; transition: all 0.12s; white-space: nowrap; }
-  .btn-add-form:hover { color: #1a1a1a; border-color: #aaa; }
-  .custom-forms-row { display: flex; flex-wrap: wrap; gap: 1px; background: #f0f0eb; border-top: 1px solid #f0f0eb; }
-  .custom-form-cell { flex: 1; min-width: 120px; background: #fff; padding: 10px 14px; cursor: pointer; border: none; text-align: left; font-family: 'Inter', sans-serif; transition: background 0.12s; }
-  .custom-form-cell:hover { background: #fafaf8; }
-  .custom-form-cell.done { background: #f0faf2; }
-  .custom-form-cell.missed { background: #fff5f5; }
 
-  /* ESTADOS TAB */
-  .estado-section { margin-bottom: 28px; }
-  .estado-section-title { font-size: 16px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; padding-bottom: 8px; border-bottom: 2px solid #e8e8e3; }
-  .estado-proj-card { background: #fff; border: 1px solid #e8e8e3; border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
-  .estado-proj-header { padding: 14px 16px; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; cursor: pointer; transition: background 0.12s; }
-  .estado-proj-header:hover { background: #fafaf8; }
-  .estado-proj-name { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
-  .estado-proj-meta { font-size: 12px; color: #888; }
-  .estado-pct { font-size: 18px; font-weight: 700; flex-shrink: 0; }
-  .estado-proj-body { border-top: 1px solid #f0f0eb; padding: 14px 16px; display: none; }
-  .estado-proj-body.open { display: block; }
-  .estado-timeline { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 14px; }
-  .estado-tl-item { flex: 1; min-width: 120px; }
-  .estado-tl-label { font-size: 10px; font-weight: 600; letter-spacing: 0.5px; color: #aaa; text-transform: uppercase; margin-bottom: 4px; }
-  .estado-tl-val { font-size: 13px; font-weight: 500; color: #1a1a1a; }
-  .estado-form-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-top: 12px; }
-  .estado-form-stat { background: #f5f5f0; border-radius: 8px; padding: 10px 12px; text-align: center; }
-  .estado-form-stat-label { font-size: 10px; color: #aaa; margin-bottom: 4px; }
-  .estado-form-stat-val { font-size: 15px; font-weight: 600; }
-  .estado-pbar { height: 4px; background: #f0f0eb; border-radius: 99px; overflow: hidden; margin: 8px 0 4px; }
-  .estado-pbar-fill { height: 100%; border-radius: 99px; }
-  .estado-months-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
-  .estado-months-table th { font-size: 10px; font-weight: 600; letter-spacing: 0.6px; text-transform: uppercase; color: #aaa; padding: 6px 10px; text-align: left; border-bottom: 1px solid #f0f0eb; }
-  .estado-months-table td { padding: 7px 10px; font-size: 12px; border-bottom: 1px solid #f8f8f5; }
-  .estado-months-table tr:last-child td { border-bottom: none; }
-
-  .btn-add-form { font-size: 11px; color: #aaa; background: none; border: 1px dashed #ddd; border-radius: 6px; cursor: pointer; font-family: 'Inter', sans-serif; padding: 5px 10px; transition: all 0.12s; white-space: nowrap; }
+  .hist-month-btn { font-size:11px; font-family:'Inter',sans-serif; padding:4px 10px; border-radius:99px; border:1px solid #e0e0e0; background:#fafaf8; color:#888; cursor:pointer; transition:all 0.12s; }
+  .hist-month-btn:hover { border-color:#bbb; color:#444; }
+  .hist-month-btn.active { background:#1a1a1a; color:#fff; border-color:#1a1a1a; } border-radius: 6px; cursor: pointer; font-family: 'Inter', sans-serif; padding: 5px 10px; transition: all 0.12s; white-space: nowrap; }
   .btn-add-form:hover { color: #1a1a1a; border-color: #aaa; }
   .custom-forms-row { display: flex; flex-wrap: wrap; gap: 1px; background: #f0f0eb; border-top: 1px solid #f0f0eb; }
   .custom-form-cell { flex: 1; min-width: 120px; background: #fff; padding: 10px 14px; cursor: pointer; border: none; text-align: left; font-family: 'Inter', sans-serif; transition: background 0.12s; }
@@ -258,7 +226,6 @@
     <div class="tabs">
       <button class="tab active" onclick="switchTab('proyectos')">📋 Proyectos</button>
       <button class="tab" onclick="switchTab('superintendentes')">👷 Superintendentes</button>
-      <button class="tab" onclick="switchTab('estados')">🗺 Estados</button>
     </div>
   </div>
 </div>
@@ -266,7 +233,6 @@
 <div class="content">
   <div id="panel-proyectos" class="tab-panel active" id="content"></div>
   <div id="panel-superintendentes" class="tab-panel"></div>
-  <div id="panel-estados" class="tab-panel"></div>
 </div>
 
 <!-- MODAL: Agregar proyecto -->
@@ -282,24 +248,6 @@
       <button class="state-btn" id="add-state-il"  onclick="pickState('add','illinois')">🏙 Illinois</button>
       <button class="state-btn" id="add-state-dmv" onclick="pickState('add','dmv')">🏛 DMV</button>
       <button class="state-btn" id="add-state-fl"  onclick="pickState('add','florida')">🌴 Florida</button>
-      <button class="state-btn" id="add-state-other" onclick="pickState('add','other')">🗺 Otro</button>
-    </div>
-    <div id="add-state-other-wrap" style="display:none;margin-bottom:14px;">
-      <select class="finp" id="add-state-select" style="margin-bottom:0;" onchange="onOtherStateChange('add')">
-        <option value="">— Selecciona un estado —</option>
-        <option>Alabama</option><option>Alaska</option><option>Arizona</option><option>Arkansas</option>
-        <option>California</option><option>Colorado</option><option>Connecticut</option><option>Delaware</option>
-        <option>Georgia</option><option>Hawaii</option><option>Idaho</option><option>Indiana</option>
-        <option>Iowa</option><option>Kansas</option><option>Kentucky</option><option>Louisiana</option>
-        <option>Maine</option><option>Maryland</option><option>Massachusetts</option><option>Michigan</option>
-        <option>Minnesota</option><option>Mississippi</option><option>Missouri</option><option>Montana</option>
-        <option>Nebraska</option><option>Nevada</option><option>New Hampshire</option><option>New Jersey</option>
-        <option>New Mexico</option><option>New York</option><option>North Carolina</option><option>North Dakota</option>
-        <option>Ohio</option><option>Oklahoma</option><option>Oregon</option><option>Pennsylvania</option>
-        <option>Rhode Island</option><option>South Carolina</option><option>South Dakota</option><option>Tennessee</option>
-        <option>Texas</option><option>Utah</option><option>Vermont</option><option>Virginia</option>
-        <option>Washington</option><option>West Virginia</option><option>Wisconsin</option><option>Wyoming</option>
-      </select>
     </div>
     <div class="flbl">SUPERINTENDENTE ASIGNADO</div>
     <div id="add-super-preset" style="display:none;">
@@ -337,24 +285,6 @@
       <button class="state-btn" id="edit-state-il"  onclick="pickState('edit','illinois')">🏙 Illinois</button>
       <button class="state-btn" id="edit-state-dmv" onclick="pickState('edit','dmv')">🏛 DMV</button>
       <button class="state-btn" id="edit-state-fl"  onclick="pickState('edit','florida')">🌴 Florida</button>
-      <button class="state-btn" id="edit-state-other" onclick="pickState('edit','other')">🗺 Otro</button>
-    </div>
-    <div id="edit-state-other-wrap" style="display:none;margin-bottom:14px;">
-      <select class="finp" id="edit-state-select" style="margin-bottom:0;" onchange="onOtherStateChange('edit')">
-        <option value="">— Selecciona un estado —</option>
-        <option>Alabama</option><option>Alaska</option><option>Arizona</option><option>Arkansas</option>
-        <option>California</option><option>Colorado</option><option>Connecticut</option><option>Delaware</option>
-        <option>Georgia</option><option>Hawaii</option><option>Idaho</option><option>Indiana</option>
-        <option>Iowa</option><option>Kansas</option><option>Kentucky</option><option>Louisiana</option>
-        <option>Maine</option><option>Maryland</option><option>Massachusetts</option><option>Michigan</option>
-        <option>Minnesota</option><option>Mississippi</option><option>Missouri</option><option>Montana</option>
-        <option>Nebraska</option><option>Nevada</option><option>New Hampshire</option><option>New Jersey</option>
-        <option>New Mexico</option><option>New York</option><option>North Carolina</option><option>North Dakota</option>
-        <option>Ohio</option><option>Oklahoma</option><option>Oregon</option><option>Pennsylvania</option>
-        <option>Rhode Island</option><option>South Carolina</option><option>South Dakota</option><option>Tennessee</option>
-        <option>Texas</option><option>Utah</option><option>Vermont</option><option>Virginia</option>
-        <option>Washington</option><option>West Virginia</option><option>Wisconsin</option><option>Wyoming</option>
-      </select>
     </div>
     <div class="flbl">SUPERINTENDENTE ASIGNADO</div>
     <div id="edit-super-preset" style="display:none;">
@@ -472,8 +402,8 @@ async function cloudSet(key, val) {
 
 // ── CONSTANTS ──────────────────────────────────────────
 const SUPERS = ['Christian Acevedo','Nicolas Jara','David Escheik','Otro'];
-const STATE_LABELS = { illinois:'Illinois', dmv:'DMV', florida:'Florida', other:'Otro' };
-const STATE_CLASS  = { illinois:'sb-il', dmv:'sb-dmv', florida:'sb-fl', other:'sb-other' };
+const STATE_LABELS = { illinois:'Illinois', dmv:'DMV', florida:'Florida' };
+const STATE_CLASS  = { illinois:'sb-il', dmv:'sb-dmv', florida:'sb-fl' };
 const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const FORM_LABELS = { toolbox:'Toolbox Talk', am:'Daily AM', pm:'Daily PM' };
 function formLabel(key){ return FORM_LABELS[key] || (key.startsWith('custom_') ? key.replace(/^custom_[^_]+_/,'').replace(/_/g,' ') : key); }
@@ -564,11 +494,10 @@ function onMonthChange(){
 function switchTab(tab){
   activeTab=tab;
   document.querySelectorAll('.tab').forEach((t,i)=>{
-    t.classList.toggle('active',['proyectos','superintendentes','estados'][i]===tab);
+    t.classList.toggle('active',['proyectos','superintendentes'][i]===tab);
   });
   document.getElementById('panel-proyectos').classList.toggle('active',tab==='proyectos');
   document.getElementById('panel-superintendentes').classList.toggle('active',tab==='superintendentes');
-  document.getElementById('panel-estados').classList.toggle('active',tab==='estados');
   render();
 }
 
@@ -579,19 +508,18 @@ function monthStats(projId){
   if(!range) return {done:0,possible:0,missed:0,pct:0,dp:0,startDay:1,endDay:0};
   const{startDay,endDay}=range;
   let done=0,possible=0;
+  // get all form keys including custom ones for this project
+  const customKeys=getCustomKeys(projId);
   for(let d=startDay;d<=endDay;d++){
     const ds=`${viewYear}-${pad(viewMonth+1)}-${pad(d)}`;
     possible+=3;
     if(getForm(projId,ds,'toolbox')?.done) done++;
     if(getForm(projId,ds,'am')?.done) done++;
     if(getForm(projId,ds,'pm')?.done) done++;
-    // custom forms: only count if they have a record on this specific day
-    Object.keys(records).forEach(k=>{
-      const[pid,kds,fk]=k.split('|');
-      if(pid===projId&&kds===ds&&fk.startsWith('custom_')){
-        possible++;
-        if(records[k]?.done) done++;
-      }
+    // custom forms on this day
+    customKeys.forEach(k=>{
+      const f=getForm(projId,ds,k);
+      if(f!==null){possible++;if(f.done)done++;}
     });
   }
   return{done,possible,missed:possible-done,pct:possible>0?Math.round(done/possible*100):0,dp:endDay-startDay+1,startDay,endDay};
@@ -636,8 +564,6 @@ function render(){
   document.getElementById('s-pct').textContent=gP>0?Math.round(gD/gP*100)+'%':'—';
 
   if(activeTab==='proyectos') renderProyectos(isCur);
-  else if(activeTab==='superintendentes') renderSuperintendentes();
-  else if(activeTab==='estados') renderEstados();
   else renderSuperintendentes();
 }
 
@@ -698,11 +624,9 @@ function renderCard(proj,isCur){
 
   const isActive=endDay>=1&&startDay<=totalDays;
 
-  // custom forms for TODAY only — only show if they actually have a record for today
-  const todayCustomKeys=Object.keys(records)
-    .filter(k=>{ const[pid,ds,fk]=k.split('|'); return pid===proj.id&&ds===tk&&fk.startsWith('custom_'); })
-    .map(k=>k.split('|')[2]);
-  const customCells=todayCustomKeys.map(k=>{
+  // custom forms for today
+  const customKeys=getCustomKeys(proj.id);
+  const customCells=customKeys.map(k=>{
     const f=getForm(proj.id,tk,k);
     return fCell(proj.id,tk,k,f,true);
   }).join('');
@@ -747,21 +671,20 @@ function renderCard(proj,isCur){
         <div class="cl-item"><div class="cl-dot" style="background:#ef9a9a;"></div> 0/3</div>
         <div class="cl-item"><div class="cl-dot" style="background:#f0f0eb;opacity:0.4;"></div> Fuera de rango</div>
       </div>
-      <button class="hist-btn" onclick="toggleHist('${proj.id}')">Ver historial del mes ↓</button>
-      <div id="hist-${proj.id}" style="display:none;">${renderHistTable(proj.id)}</div>
+      <button class="hist-btn" onclick="toggleHist('${proj.id}')">Ver historial ↓</button>
+      <div id="hist-${proj.id}" style="display:none;">
+        <div id="hist-month-nav-${proj.id}" style="display:flex;flex-wrap:wrap;gap:6px;padding:12px 0 4px;"></div>
+        <div id="hist-body-${proj.id}"></div>
+      </div>
     </div>
   </div>`;
 }
 
 function fCell(pid,ds,key,form,isCustom=false){
-  const proj=projects.find(p=>p.id===pid);
   const isDone=form?.done===true,isMissed=form?.done===false;
   const cls=isDone?'done':isMissed?'missed':'';
   const status=isDone?`✓ ${form.time||''}`:isMissed?'✗ No completado':'— Sin marcar';
-  const isDiff=isDone&&form.by&&proj&&form.by!==proj.super;
-  const meta=isDone
-    ? `<span style="color:#aaa;">${form.by||''}</span>`
-    : isMissed&&form?.note?form.note:'';
+  const meta=isDone?(form.by||''):isMissed&&form?.note?form.note:'';
   const cellClass=isCustom?'custom-form-cell':'form-cell';
   return `<button class="${cellClass} ${cls}" onclick="openFormModal('${pid}','${ds}','${key}')">
     <div class="fc-label">${formLabel(key)}</div>
@@ -775,7 +698,7 @@ function renderHistTable(projId){
   const range=proj?activeDayRange(proj):null;
   if(!range) return '<p style="color:#aaa;font-size:12px;padding:8px 0;">Sin días activos este mes.</p>';
   const{startDay,endDay}=range;
-  const projSuper=proj?.super||'';
+  const customKeys=getCustomKeys(projId);
   let rows='';
   for(let d=endDay;d>=startDay;d--){
     const ds=`${viewYear}-${pad(viewMonth+1)}-${pad(d)}`;
@@ -783,59 +706,21 @@ function renderHistTable(projId){
     const t=getForm(projId,ds,'toolbox');
     const a=getForm(projId,ds,'am');
     const pp=getForm(projId,ds,'pm');
-    const dayCustomKeys=Object.keys(records)
-      .filter(k=>{ const[pid,kds,fk]=k.split('|'); return pid===projId&&kds===ds&&fk.startsWith('custom_'); })
-      .map(k=>k.split('|')[2]);
-    const customChips=dayCustomKeys.map(k=>{
+    const customChips=customKeys.map(k=>{
       const f=getForm(projId,ds,k);
-      return f?`<span style="font-size:10px;color:#888;margin-right:2px;">${formLabel(k)}:</span>${hChip(f,projId,ds,k)}`:'';
+      return f?`<span style="font-size:10px;color:#888;margin-right:4px;">${formLabel(k)}:</span>${hChip(f,projId,ds,k)}`:'';
     }).filter(Boolean).join(' ');
-
-    // collect unique supers who completed forms that day
-    const supers=[t,a,pp,...dayCustomKeys.map(k=>getForm(projId,ds,k))]
-      .filter(f=>f?.done&&f.by).map(f=>f.by);
-    const uniqueSupers=[...new Set(supers)];
-    const superTd=uniqueSupers.length===0
-      ? `<td style="color:#ddd;font-size:11px;">—</td>`
-      : `<td style="font-size:11px;color:#aaa;">${uniqueSupers.join(', ')}</td>`;
-
     rows+=`<tr class="${isT?'tr-today':''}">
       <td style="color:#888;white-space:nowrap;">${String(d).padStart(2,'0')} ${MONTHS[viewMonth].slice(0,3)}</td>
       <td>${hChip(t,projId,ds,'toolbox')}</td>
       <td>${hChip(a,projId,ds,'am')}</td>
       <td>${hChip(pp,projId,ds,'pm')}</td>
       ${customChips?`<td style="font-size:11px;">${customChips}</td>`:'<td></td>'}
-      ${superTd}
       <td>${dScore(t,a,pp)}</td>
     </tr>`;
   }
-
-  // out-of-range custom forms
-  const outRows=[];
-  Object.keys(records).forEach(k=>{
-    const[pid,ds,fk]=k.split('|');
-    if(pid!==projId||!fk.startsWith('custom_')) return;
-    const[,mm,dd]=ds.split('-').map(Number);
-    if(mm!==viewMonth+1) return;
-    const d=parseInt(dd);
-    if(d>=startDay&&d<=endDay) return;
-    outRows.push({ds,fk,d});
-  });
-  outRows.sort((a,b)=>b.d-a.d);
-  outRows.forEach(({ds,fk,d})=>{
-    const f=records[`${projId}|${ds}|${fk}`];
-    const isDiff=f?.by&&f.by!==projSuper;
-    rows+=`<tr>
-      <td style="color:#bbb;white-space:nowrap;">${String(d).padStart(2,'0')} ${MONTHS[viewMonth].slice(0,3)}</td>
-      <td colspan="3"></td>
-      <td style="font-size:11px;"><span style="font-size:10px;color:#888;margin-right:2px;">${formLabel(fk)}:</span>${hChip(f,projId,ds,fk)}</td>
-      <td style="font-size:11px;color:#aaa;">${f?.by||'—'}</td>
-      <td style="color:#ddd;">—</td>
-    </tr>`;
-  });
-
   return `<div class="hist-wrap"><table class="hist-table">
-    <thead><tr><th>Fecha</th><th>Toolbox Talk</th><th>Daily AM</th><th>Daily PM</th><th>Forms Extra</th><th>Superintendent</th><th>Score</th></tr></thead>
+    <thead><tr><th>Fecha</th><th>Toolbox Talk</th><th>Daily AM</th><th>Daily PM</th><th>Forms Extra</th><th>Score</th></tr></thead>
     <tbody>${rows}</tbody>
   </table></div>`;
 }
@@ -851,17 +736,71 @@ function dScore(t,a,p){
   const c=cnt===3?'#2e7d32':cnt>=1?'#f57f17':'#c62828';
   return `<span style="color:${c};font-weight:500;">${cnt}/3</span>`;
 }
+function getProjectMonths(proj){
+  // returns array of {y,m} from project start month to current month
+  const months=[];
+  const endDate=now;
+  // determine start: use project startDate or earliest record date
+  let startY=now.getFullYear(), startM=now.getMonth();
+  if(proj.startDate){
+    const[sy,sm]=proj.startDate.split('-').map(Number);
+    startY=sy; startM=sm-1;
+  } else {
+    const keys=Object.keys(records).filter(k=>k.startsWith(proj.id+'|'));
+    if(keys.length){
+      const dates=keys.map(k=>k.split('|')[1]).sort();
+      const[sy,sm]=dates[0].split('-').map(Number);
+      startY=sy; startM=sm-1;
+    }
+  }
+  let y=startY, m=startM;
+  while(y<now.getFullYear()||(y===now.getFullYear()&&m<=now.getMonth())){
+    months.push({y,m});
+    m++; if(m>11){m=0;y++;}
+  }
+  return months.reverse(); // newest first
+}
+
 function toggleHist(projId){
   const el=document.getElementById('hist-'+projId);
+  const nav=document.getElementById('hist-month-nav-'+projId);
+  const body=document.getElementById('hist-body-'+projId);
   if(!el) return;
-  if(el.style.display==='none'){el.innerHTML=renderHistTable(projId);el.style.display='block';}
-  else el.style.display='none';
+  if(el.style.display==='none'){
+    el.style.display='block';
+    const proj=projects.find(p=>p.id===projId);
+    const months=getProjectMonths(proj);
+    // build nav buttons
+    nav.innerHTML=months.map(({y,m},i)=>`
+      <button class="hist-month-btn${i===0?' active':''}" onclick="switchHistMonth('${projId}',${y},${m},this)">
+        ${MONTHS[m].slice(0,3)} ${y}
+      </button>`).join('');
+    // show current month
+    const{y:cy,m:cm}=months[0];
+    renderHistForMonth(projId,cy,cm,body);
+  } else {
+    el.style.display='none';
+  }
+}
+
+function switchHistMonth(projId,y,m,btn){
+  const body=document.getElementById('hist-body-'+projId);
+  document.querySelectorAll(`#hist-month-nav-${projId} .hist-month-btn`).forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderHistForMonth(projId,y,m,body);
+}
+
+function renderHistForMonth(projId,y,m,body){
+  // temporarily set viewYear/viewMonth for this render only
+  const savedY=viewYear, savedM=viewMonth;
+  viewYear=y; viewMonth=m;
+  body.innerHTML=renderHistTable(projId);
+  viewYear=savedY; viewMonth=savedM;
 }
 
 // ── SUPER TAB ──────────────────────────────────────────
 function renderSuperintendentes(){
   const panel=document.getElementById('panel-superintendentes');
-  // Collect all supers from projects
   const superNames=[...new Set(projects.map(p=>p.super))].filter(Boolean);
   if(!superNames.length){
     panel.innerHTML=`<div style="text-align:center;padding:60px 20px;color:#aaa;">
@@ -873,32 +812,59 @@ function renderSuperintendentes(){
 
   const cards=superNames.map(superName=>{
     const myProjects=projects.filter(p=>p.super===superName);
-    let totalDone=0,totalPoss=0,tb=0,am=0,pm=0;
-    myProjects.forEach(proj=>{
-      const range=activeDayRange(proj);
-      if(!range) return;
-      const{startDay,endDay}=range;
-      for(let d=startDay;d<=endDay;d++){
-        const ds=`${viewYear}-${pad(viewMonth+1)}-${pad(d)}`;
-        totalPoss+=3;
-        const tF=getForm(proj.id,ds,'toolbox');
-        const aF=getForm(proj.id,ds,'am');
-        const pF=getForm(proj.id,ds,'pm');
-        if(tF?.done){totalDone++;tb++;}
-        if(aF?.done){totalDone++;am++;}
-        if(pF?.done){totalDone++;pm++;}
-      }
+
+    // evaluate per project over full duration
+    const projStats=myProjects.map(proj=>{
+      const allKeys=Object.keys(records).filter(k=>k.startsWith(proj.id+'|'));
+      // get all months this project has records in
+      const months=getProjectMonths(proj);
+      let done=0,possible=0,tb=0,am=0,pm=0,dp=0;
+      months.forEach(({y,m})=>{
+        const savedY=viewYear,savedM=viewMonth;
+        viewYear=y;viewMonth=m;
+        const range=activeDayRange(proj);
+        if(range){
+          const{startDay,endDay}=range;
+          for(let d=startDay;d<=endDay;d++){
+            const ds=`${y}-${pad(m+1)}-${pad(d)}`;
+            possible+=3; dp++;
+            const tF=getForm(proj.id,ds,'toolbox');
+            const aF=getForm(proj.id,ds,'am');
+            const pF=getForm(proj.id,ds,'pm');
+            if(tF?.done){done++;tb++;}
+            if(aF?.done){done++;am++;}
+            if(pF?.done){done++;pm++;}
+          }
+        }
+        viewYear=savedY;viewMonth=savedM;
+      });
+      return{proj,done,possible,tb,am,pm,dp};
     });
+
+    const totalDone=projStats.reduce((s,p)=>s+p.done,0);
+    const totalPoss=projStats.reduce((s,p)=>s+p.possible,0);
+    const totalDp=projStats.reduce((s,p)=>s+p.dp,0);
     const pct=totalPoss>0?Math.round(totalDone/totalPoss*100):0;
     const pctColor=pct>=80?'#2e7d32':pct>=50?'#f57f17':'#c62828';
     const barColor=pct>=80?'#4caf50':pct>=50?'#ffc107':'#ef5350';
-    const dp=totalPoss/3;
+
+    const projBreakdown=projStats.map(({proj,done,possible,tb,am,pm,dp})=>{
+      const p=possible>0?Math.round(done/possible*100):0;
+      const c=p>=80?'#2e7d32':p>=50?'#f57f17':'#c62828';
+      return `<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #f5f5f0;font-size:12px;">
+        <span style="color:#555;font-weight:500;">${proj.name}</span>
+        <span style="display:flex;gap:10px;align-items:center;">
+          <span style="color:#aaa;font-size:11px;">TB:${tb} AM:${am} PM:${pm}</span>
+          <span style="font-weight:600;color:${c};">${p}%</span>
+        </span>
+      </div>`;
+    }).join('');
 
     return `<div class="super-card">
       <div class="super-card-name">👷 ${superName}</div>
       <div class="super-card-projects">${myProjects.length} proyecto${myProjects.length!==1?'s':''}: ${myProjects.map(p=>p.name).join(', ')}</div>
       <div class="super-stat-row">
-        <span class="super-stat-label">Cumplimiento del mes</span>
+        <span class="super-stat-label">Cumplimiento total del proyecto</span>
         <span class="super-stat-val" style="color:${pctColor};">${pct}%</span>
       </div>
       <div class="super-pbar"><div class="super-pbar-fill" style="width:${pct}%;background:${barColor};"></div></div>
@@ -907,19 +873,14 @@ function renderSuperintendentes(){
         <span style="font-size:12px;color:#ef5350;">✗ ${totalPoss-totalDone} perdidos</span>
         <span style="font-size:12px;color:#888;">${totalPoss} total</span>
       </div>
-      <div class="super-form-breakdown">
-        <div class="sfb">
-          <div class="sfb-label">Toolbox</div>
-          <div class="sfb-val" style="color:${tb/Math.max(dp,1)>=0.8?'#2e7d32':'#c62828'};">${tb}/${dp}</div>
-        </div>
-        <div class="sfb">
-          <div class="sfb-label">Daily AM</div>
-          <div class="sfb-val" style="color:${am/Math.max(dp,1)>=0.8?'#2e7d32':'#c62828'};">${am}/${dp}</div>
-        </div>
-        <div class="sfb">
-          <div class="sfb-label">Daily PM</div>
-          <div class="sfb-val" style="color:${pm/Math.max(dp,1)>=0.8?'#2e7d32':'#c62828'};">${pm}/${dp}</div>
-        </div>
+      ${projStats.length>1?`<div style="margin-top:4px;">${projBreakdown}</div>`:''}
+      <div class="super-form-breakdown" style="margin-top:10px;">
+        <div class="sfb"><div class="sfb-label">Toolbox</div>
+          <div class="sfb-val" style="color:${projStats.reduce((s,p)=>s+p.tb,0)/Math.max(totalDp,1)>=0.8?'#2e7d32':'#c62828'};">${projStats.reduce((s,p)=>s+p.tb,0)}/${totalDp}</div></div>
+        <div class="sfb"><div class="sfb-label">Daily AM</div>
+          <div class="sfb-val" style="color:${projStats.reduce((s,p)=>s+p.am,0)/Math.max(totalDp,1)>=0.8?'#2e7d32':'#c62828'};">${projStats.reduce((s,p)=>s+p.am,0)}/${totalDp}</div></div>
+        <div class="sfb"><div class="sfb-label">Daily PM</div>
+          <div class="sfb-val" style="color:${projStats.reduce((s,p)=>s+p.pm,0)/Math.max(totalDp,1)>=0.8?'#2e7d32':'#c62828'};">${projStats.reduce((s,p)=>s+p.pm,0)}/${totalDp}</div></div>
       </div>
     </div>`;
   }).join('');
@@ -948,28 +909,8 @@ function pickSuper(listId,otherWrapId,name,el){
 function getSelectedSuper(listId,otherInpId){
   const sel=document.getElementById(listId).querySelector('.super-opt.sel');
   if(!sel) return null;
-  const name=sel.querySelector('span').textContent.replace(' ★','');
+  const name=sel.querySelector('span').textContent;
   return name==='Otro'?(document.getElementById(otherInpId).value.trim()||null):name;
-}
-
-// Full super list for form modal — always shows all known supers + project's super
-function buildSuperListFull(listId, otherWrapId, otherInpId, proj, currentVal){
-  const container=document.getElementById(listId);
-  // build list: all known supers, plus project's super if not already included
-  const projSuper=proj?.super||null;
-  const baseList=SUPERS.slice(0,-1); // exclude 'Otro'
-  const allNames=[...new Set([...baseList, ...(projSuper&&!baseList.includes(projSuper)?[projSuper]:[])])];
-  const isOtherVal=currentVal&&!allNames.includes(currentVal);
-  container.innerHTML=[...allNames,'Otro'].map(name=>{
-    const isSel=name==='Otro'?isOtherVal:name===currentVal;
-    const isAssigned=name===projSuper;
-    const label=isAssigned?`${name} <span style="font-size:9px;color:#f57f17;font-weight:600;background:#fff8e1;padding:1px 5px;border-radius:99px;margin-left:2px;">asignado</span>`:name;
-    return `<div class="super-opt${isSel?' sel':''}" onclick="pickSuper('${listId}','${otherWrapId}','${name}',this)">
-      <div class="radio-dot"></div><span>${label}</span>
-    </div>`;
-  }).join('');
-  document.getElementById(otherWrapId).style.display=isOtherVal?'block':'none';
-  if(isOtherVal) document.getElementById(otherInpId).value=currentVal;
 }
 
 // ── MODALS ─────────────────────────────────────────────
@@ -980,56 +921,44 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelect
 
 // ── STATE PICKER ───────────────────────────────────────
 let addState=null, editState=null;
-let addStateOtherVal=null, editStateOtherVal=null;
 
 function pickState(ctx, state){
   const isAdd=ctx==='add';
   if(isAdd) addState=state; else editState=state;
-  ['il','dmv','fl','other'].forEach(s=>{
-    const key=s==='il'?'illinois':s==='fl'?'florida':s==='dmv'?'dmv':'other';
-    document.getElementById(`${ctx}-state-${s}`).classList.toggle('sel',key===state);
+  // update buttons
+  ['illinois','dmv','florida'].forEach(s=>{
+    document.getElementById(`${ctx}-state-${s==='illinois'?'il':s==='dmv'?'dmv':'fl'}`).classList.toggle('sel',s===state);
   });
-  const isOther=state==='other';
-  document.getElementById(`${ctx}-state-other-wrap`).style.display=isOther?'block':'none';
-  if(isOther){ document.getElementById(`${ctx}-state-select`).value=''; if(isAdd) addStateOtherVal=null; else editStateOtherVal=null; }
+  // show/hide super sections
   const isIL=state==='illinois';
   document.getElementById(`${ctx}-super-preset`).style.display=isIL?'block':'none';
-  document.getElementById(`${ctx}-super-manual`).style.display=(!isIL&&!isOther)?'block':'none';
-  document.getElementById(`${ctx}-super-placeholder`).style.display=isOther?'block':'none';
-  if(isOther) document.getElementById(`${ctx}-super-placeholder`).textContent='Selecciona un estado del dropdown primero';
-  if(isIL){ buildSuperList(`${ctx}-super-list`,`${ctx}-other-wrap`,isAdd?'inp-other':'edit-other',null); }
-}
-
-function onOtherStateChange(ctx){
-  const val=document.getElementById(`${ctx}-state-select`).value;
-  if(ctx==='add') addStateOtherVal=val; else editStateOtherVal=val;
-  document.getElementById(`${ctx}-super-manual`).style.display=val?'block':'none';
-  document.getElementById(`${ctx}-super-placeholder`).style.display=val?'none':'block';
+  document.getElementById(`${ctx}-super-manual`).style.display=!isIL?'block':'none';
+  document.getElementById(`${ctx}-super-placeholder`).style.display='none';
+  if(isIL){
+    const listId=`${ctx}-super-list`, wrapId=`${ctx}-other-wrap`, inpId=isAdd?'inp-other':'edit-other';
+    buildSuperList(listId,wrapId,inpId,null);
+  }
 }
 
 function getSuperForCtx(ctx){
   const state=ctx==='add'?addState:editState;
   if(!state) return null;
-  if(state==='illinois') return getSelectedSuper(`${ctx}-super-list`,ctx==='add'?'inp-other':'edit-other');
-  return document.getElementById(ctx==='add'?'inp-super-manual':'edit-super-manual-inp').value.trim()||null;
-}
-
-function getStateValueForCtx(ctx){
-  const state=ctx==='add'?addState:editState;
-  if(state==='other') return (ctx==='add'?addStateOtherVal:editStateOtherVal)||null;
-  return state;
+  if(state==='illinois'){
+    return getSelectedSuper(`${ctx}-super-list`, ctx==='add'?'inp-other':'edit-other');
+  }
+  const inp=document.getElementById(ctx==='add'?'inp-super-manual':'edit-super-manual-inp');
+  return inp.value.trim()||null;
 }
 
 function openAddModal(){
-  addState=null; addStateOtherVal=null;
-  ['inp-name','inp-type','inp-other','inp-start','inp-end','inp-super-manual'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  ['add-state-il','add-state-dmv','add-state-fl','add-state-other'].forEach(id=>document.getElementById(id).classList.remove('sel'));
-  document.getElementById('add-state-other-wrap').style.display='none';
-  document.getElementById('add-state-select').value='';
+  addState=null;
+  ['inp-name','inp-type','inp-other','inp-start','inp-end','inp-super-manual'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
+  ['add-state-il','add-state-dmv','add-state-fl'].forEach(id=>document.getElementById(id).classList.remove('sel'));
   document.getElementById('add-super-preset').style.display='none';
   document.getElementById('add-super-manual').style.display='none';
   document.getElementById('add-super-placeholder').style.display='block';
-  document.getElementById('add-super-placeholder').textContent='Selecciona un estado primero';
   buildSuperList('add-super-list','add-other-wrap','inp-other',null);
   openModal('modal-add');
   setTimeout(()=>document.getElementById('inp-name').focus(),200);
@@ -1040,16 +969,16 @@ async function addProject(){
   const sup=getSuperForCtx('add');
   const startDate=document.getElementById('inp-start').value||null;
   const endDate=document.getElementById('inp-end').value||null;
-  const stateVal=getStateValueForCtx('add');
   if(!name){document.getElementById('inp-name').style.borderColor='#ef5350';return;}
   if(!addState){alert('Selecciona un estado.');return;}
-  if(addState==='other'&&!stateVal){alert('Selecciona un estado del dropdown.');return;}
   if(!sup){alert('Ingresa el nombre del superintendente.');return;}
   const btn=document.getElementById('btn-add-save');
   btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Guardando...';
   try{
-    projects.push({id:uid(),name,type:type||'—',super:sup,state:addState,stateLabel:stateVal,startDate,endDate});
-    await saveProjects();closeModal('modal-add');render();setSyncUI('ok','Guardado ✓');
+    projects.push({id:uid(),name,type:type||'—',super:sup,state:addState,startDate,endDate});
+    await saveProjects();
+    closeModal('modal-add');render();
+    setSyncUI('ok','Guardado ✓');
   }catch(e){alert('Error al guardar.');}
   finally{btn.disabled=false;btn.textContent='Agregar';}
 }
@@ -1059,30 +988,29 @@ let pendingEditId=null;
 function openEditModal(id){
   const p=projects.find(x=>x.id===id);
   if(!p) return;
-  pendingEditId=id; editState=p.state||null; editStateOtherVal=p.stateLabel||null;
+  pendingEditId=id;
+  editState=p.state||null;
   document.getElementById('edit-name').value=p.name||'';
   document.getElementById('edit-type').value=p.type==='—'?'':p.type||'';
   document.getElementById('edit-start').value=p.startDate||'';
   document.getElementById('edit-end').value=p.endDate||'';
-  ['edit-state-il','edit-state-dmv','edit-state-fl','edit-state-other'].forEach(id=>document.getElementById(id).classList.remove('sel'));
-  document.getElementById('edit-state-other-wrap').style.display='none';
+  // reset state buttons
+  ['edit-state-il','edit-state-dmv','edit-state-fl'].forEach(id=>document.getElementById(id).classList.remove('sel'));
   document.getElementById('edit-super-preset').style.display='none';
   document.getElementById('edit-super-manual').style.display='none';
   document.getElementById('edit-super-placeholder').style.display='block';
-  document.getElementById('edit-super-placeholder').textContent='Selecciona un estado primero';
   document.getElementById('edit-super-manual-inp').value='';
   if(p.state){
-    const btnMap={illinois:'edit-state-il',dmv:'edit-state-dmv',florida:'edit-state-fl',other:'edit-state-other'};
-    if(btnMap[p.state]) document.getElementById(btnMap[p.state]).classList.add('sel');
-    const isIL=p.state==='illinois', isOther=p.state==='other';
-    document.getElementById('edit-state-other-wrap').style.display=isOther?'block':'none';
-    if(isOther&&p.stateLabel) document.getElementById('edit-state-select').value=p.stateLabel;
+    const btnId=p.state==='illinois'?'edit-state-il':p.state==='dmv'?'edit-state-dmv':'edit-state-fl';
+    document.getElementById(btnId).classList.add('sel');
+    const isIL=p.state==='illinois';
     document.getElementById('edit-super-preset').style.display=isIL?'block':'none';
-    document.getElementById('edit-super-manual').style.display=(!isIL&&(!isOther||p.stateLabel))?'block':'none';
-    document.getElementById('edit-super-placeholder').style.display=(isOther&&!p.stateLabel)?'block':'none';
+    document.getElementById('edit-super-manual').style.display=!isIL?'block':'none';
+    document.getElementById('edit-super-placeholder').style.display='none';
     if(isIL) buildSuperList('edit-super-list','edit-other-wrap','edit-other',p.super);
     else document.getElementById('edit-super-manual-inp').value=p.super||'';
   } else {
+    // legacy project without state — show manual input with current super
     document.getElementById('edit-super-manual').style.display='block';
     document.getElementById('edit-super-placeholder').style.display='none';
     document.getElementById('edit-super-manual-inp').value=p.super||'';
@@ -1095,19 +1023,24 @@ async function saveEdit(){
   const type=document.getElementById('edit-type').value.trim();
   const startDate=document.getElementById('edit-start').value||null;
   const endDate=document.getElementById('edit-end').value||null;
-  const stateVal=getStateValueForCtx('edit');
   let sup;
-  if(editState==='illinois') sup=getSelectedSuper('edit-super-list','edit-other');
-  else sup=document.getElementById('edit-super-manual-inp').value.trim()||null;
+  if(editState){
+    sup=getSuperForCtx('edit');
+  } else {
+    sup=document.getElementById('edit-super-manual-inp').value.trim()||null;
+  }
   if(!name){document.getElementById('edit-name').style.borderColor='#ef5350';return;}
-  if(editState==='other'&&!stateVal){alert('Selecciona un estado del dropdown.');return;}
   if(!sup){alert('Ingresa el nombre del superintendente.');return;}
   const btn=document.getElementById('btn-edit-save');
   btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Guardando...';
   try{
     const idx=projects.findIndex(p=>p.id===pendingEditId);
-    if(idx!==-1) projects[idx]={...projects[idx],name,type:type||'—',super:sup,state:editState||projects[idx].state||null,stateLabel:stateVal||projects[idx].stateLabel||null,startDate,endDate};
-    await saveProjects();closeModal('modal-edit');render();setSyncUI('ok','Guardado ✓');
+    if(idx!==-1){
+      projects[idx]={...projects[idx],name,type:type||'—',super:sup,state:editState||projects[idx].state||null,startDate,endDate};
+    }
+    await saveProjects();
+    closeModal('modal-edit');render();
+    setSyncUI('ok','Guardado ✓');
   }catch(e){alert('Error al guardar.');}
   finally{btn.disabled=false;btn.textContent='Guardar cambios';}
 }
@@ -1145,9 +1078,7 @@ function openFormModal(projId,dateStr,formKey){
   document.getElementById('mf-presets').innerHTML=(PRESETS[formKey]||[]).map(t=>
     `<div class="tp" onclick="selTime('${t}',this)">${t}</div>`).join('');
   const ex=getForm(projId,dateStr,formKey);
-  // build super list: always show all known supers + project's assigned super
-  const proj=projects.find(p=>p.id===projId);
-  buildSuperListFull('form-super-list','form-other-wrap','mf-other-by', proj, ex?.done?ex.by:null);
+  buildSuperList('form-super-list','form-other-wrap','mf-other-by',ex?.done?ex.by:null);
   if(ex?.done===true){setStatus(true);document.getElementById('mf-time').value=ex.time||'';
     document.querySelectorAll('#mf-presets .tp').forEach(el=>{if(el.textContent===ex.time)el.classList.add('sel');});}
   else if(ex?.done===false){setStatus(false);document.getElementById('mf-note').value=ex.note||'';}
@@ -1248,136 +1179,11 @@ async function saveForm(){
   finally{btn.disabled=false;btn.textContent='Guardar';}
 }
 
-// ── ESTADOS TAB ────────────────────────────────────────
-function getStateDisplayName(proj){
-  if(!proj.state) return 'Sin estado';
-  if(proj.state==='illinois') return 'Illinois';
-  if(proj.state==='dmv') return 'DMV';
-  if(proj.state==='florida') return 'Florida';
-  if(proj.state==='other') return proj.stateLabel||'Otro';
-  return proj.state;
-}
-function getStateEmoji(s){ return s==='Illinois'?'🏙':s==='DMV'?'🏛':s==='Florida'?'🌴':'🗺'; }
-function fmtDateNice(d){ if(!d)return '—'; const[y,m,dd]=d.split('-'); return `${parseInt(dd)} ${MONTHS[parseInt(m)-1]} ${y}`; }
-function calcDaysBetween(d1,d2){ if(!d1||!d2)return 0; return Math.round((new Date(d2)-new Date(d1))/(1000*60*60*24))+1; }
-
-function getProjectTimeline(projId){
-  const keys=Object.keys(records).filter(k=>k.startsWith(projId+'|'));
-  if(!keys.length) return{firstDate:null,lastDate:null};
-  const dates=keys.map(k=>k.split('|')[1]).sort();
-  return{firstDate:dates[0],lastDate:dates[dates.length-1]};
-}
-
-function getMonthlyBreakdown(projId){
-  const rows=[];
-  for(let mi=0;mi<6;mi++){
-    const d=new Date(now.getFullYear(),now.getMonth()-mi,1);
-    const y=d.getFullYear(),m=d.getMonth();
-    const savedY=viewYear,savedM=viewMonth;
-    viewYear=y;viewMonth=m;
-    const{done,possible,dp}=monthStats(projId);
-    viewYear=savedY;viewMonth=savedM;
-    if(possible>0) rows.push({label:`${MONTHS[m]} ${y}`,done,possible,dp,pct:Math.round(done/possible*100)});
-  }
-  return rows;
-}
-
-function toggleEstadoProj(projId){
-  const body=document.getElementById('estado-body-'+projId);
-  if(!body) return;
-  body.classList.toggle('open');
-  const btn=document.getElementById('estado-toggle-'+projId);
-  if(btn) btn.textContent=body.classList.contains('open')?'▲':'▼';
-}
-
-function renderEstados(){
-  const panel=document.getElementById('panel-estados');
-  if(!projects.length){
-    panel.innerHTML=`<div style="text-align:center;padding:60px 20px;color:#aaa;"><div style="font-size:32px;margin-bottom:12px;">🗺</div><div style="font-size:15px;font-weight:500;color:#666;">Sin proyectos registrados</div></div>`;
-    return;
-  }
-  // group by state
-  const groups={};
-  projects.forEach(proj=>{
-    const sn=getStateDisplayName(proj);
-    if(!groups[sn]) groups[sn]=[];
-    groups[sn].push(proj);
-  });
-  const stateOrder=['Illinois','DMV','Florida'];
-  const sorted=[...stateOrder.filter(s=>groups[s]),...Object.keys(groups).filter(s=>!stateOrder.includes(s)&&s!=='Sin estado').sort(),...(groups['Sin estado']?['Sin estado']:[])];
-
-  let html='';
-  sorted.forEach(stateName=>{
-    const projs=groups[stateName];
-    const emoji=getStateEmoji(stateName);
-    // this-month compliance for state
-    const savedY=viewYear,savedM=viewMonth;
-    viewYear=now.getFullYear();viewMonth=now.getMonth();
-    let stD=0,stP=0;
-    projs.forEach(p=>{const s=monthStats(p.id);stD+=s.done;stP+=s.possible;});
-    viewYear=savedY;viewMonth=savedM;
-    const stPct=stP>0?Math.round(stD/stP*100):0;
-    const stColor=stPct>=80?'#2e7d32':stPct>=50?'#f57f17':'#c62828';
-
-    const projCards=projs.map(proj=>{
-      const{firstDate,lastDate}=getProjectTimeline(proj.id);
-      const allKeys=Object.keys(records).filter(k=>k.startsWith(proj.id+'|'));
-      const allDone=allKeys.filter(k=>records[k]?.done===true).length;
-      const allPct=allKeys.length>0?Math.round(allDone/allKeys.length*100):0;
-      const allColor=allPct>=80?'#2e7d32':allPct>=50?'#f57f17':'#c62828';
-      const allBar=allPct>=80?'#4caf50':allPct>=50?'#ffc107':'#ef5350';
-      const startLabel=proj.startDate?fmtDateNice(proj.startDate):(firstDate?fmtDateNice(firstDate)+'*':'—');
-      const endLabel=proj.endDate?fmtDateNice(proj.endDate):(proj.endDate===null&&lastDate?fmtDateNice(lastDate)+'*':'En curso');
-      const duration=proj.startDate&&proj.endDate?calcDaysBetween(proj.startDate,proj.endDate):firstDate&&lastDate?calcDaysBetween(firstDate,lastDate):null;
-      const monthlyRows=getMonthlyBreakdown(proj.id);
-      const isFromForms=!proj.startDate&&firstDate;
-
-      return `<div class="estado-proj-card">
-        <div class="estado-proj-header" onclick="toggleEstadoProj('${proj.id}')">
-          <div style="flex:1;">
-            <div class="estado-proj-name">${proj.name} <span style="font-weight:400;color:#888;font-size:13px;">· ${proj.type}</span></div>
-            <div class="estado-proj-meta">👷 ${proj.super} · ${startLabel} → ${endLabel}${duration?` · ${duration} días`:''}</div>
-          </div>
-          <div style="display:flex;align-items:center;gap:10px;">
-            <div class="estado-pct" style="color:${allColor};">${allPct}%</div>
-            <span id="estado-toggle-${proj.id}" style="color:#ccc;font-size:12px;">▼</span>
-          </div>
-        </div>
-        <div class="estado-proj-body" id="estado-body-${proj.id}">
-          <div class="estado-timeline">
-            <div class="estado-tl-item"><div class="estado-tl-label">Inicio</div><div class="estado-tl-val">${startLabel}</div></div>
-            <div class="estado-tl-item"><div class="estado-tl-label">Fin</div><div class="estado-tl-val">${endLabel}</div></div>
-            ${duration?`<div class="estado-tl-item"><div class="estado-tl-label">Duración</div><div class="estado-tl-val">${duration} días</div></div>`:''}
-            <div class="estado-tl-item"><div class="estado-tl-label">Cumplimiento total</div><div class="estado-tl-val" style="color:${allColor};">${allDone}/${allKeys.length} (${allPct}%)</div></div>
-          </div>
-          <div class="estado-pbar"><div class="estado-pbar-fill" style="width:${allPct}%;background:${allBar};"></div></div>
-          <div class="estado-form-grid">
-            <div class="estado-form-stat"><div class="estado-form-stat-label">Total forms</div><div class="estado-form-stat-val">${allKeys.length}</div></div>
-            <div class="estado-form-stat"><div class="estado-form-stat-label">Completados</div><div class="estado-form-stat-val" style="color:#2e7d32;">✓ ${allDone}</div></div>
-            <div class="estado-form-stat"><div class="estado-form-stat-label">Perdidos</div><div class="estado-form-stat-val" style="color:#c62828;">✗ ${allKeys.length-allDone}</div></div>
-          </div>
-          ${monthlyRows.length?`<table class="estado-months-table" style="margin-top:14px;">
-            <thead><tr><th>Mes</th><th>Días activos</th><th>Hechos</th><th>Perdidos</th><th>%</th></tr></thead>
-            <tbody>${monthlyRows.map(r=>{const c=r.pct>=80?'#2e7d32':r.pct>=50?'#f57f17':'#c62828';return `<tr><td>${r.label}</td><td>${r.dp}</td><td style="color:#2e7d32;">✓${r.done}</td><td style="color:#c62828;">✗${r.possible-r.done}</td><td style="color:${c};font-weight:600;">${r.pct}%</td></tr>`;}).join('')}</tbody>
-          </table>`:''}
-          ${isFromForms?`<div style="font-size:10px;color:#bbb;margin-top:8px;">* Fechas calculadas desde el primer/último form registrado.</div>`:''}
-        </div>
-      </div>`;
-    }).join('');
-
-    html+=`<div class="estado-section">
-      <div class="estado-section-title">${emoji} ${stateName} <span style="font-size:13px;font-weight:400;color:#888;">${projs.length} proyecto${projs.length!==1?'s':''}</span><span style="margin-left:auto;font-size:14px;font-weight:700;color:${stColor};">${stPct}% este mes</span></div>
-      ${projCards}
-    </div>`;
-  });
-  panel.innerHTML=html;
-}
-
 // ── EXPORT XLSX ────────────────────────────────────────
 function exportXLSX(){
   const wb=XLSX.utils.book_new();
-  // RESUMEN
-  const resRows=[['Proyecto','Tipo','Estado','Superintendente','Inicio','Fin','Mes','Días Activos','Forms Hechos','Forms Perdidos','Total','Cumplimiento %']];
+  const resH=['Proyecto','Tipo','Superintendente','Inicio','Fin','Mes','Días Activos','Forms Hechos','Forms Perdidos','Total','Cumplimiento %'];
+  const resRows=[resH];
   projects.forEach(proj=>{
     for(let mi=0;mi<6;mi++){
       const d=new Date(now.getFullYear(),now.getMonth()-mi,1);
@@ -1386,24 +1192,30 @@ function exportXLSX(){
       viewYear=y;viewMonth=m;
       const{done,possible,dp}=monthStats(proj.id);
       viewYear=savedY;viewMonth=savedM;
-      if(possible>0) resRows.push([proj.name,proj.type,getStateDisplayName(proj),proj.super,proj.startDate||'—',proj.endDate||'En curso',`${MONTHS[m]} ${y}`,dp,done,possible-done,possible,Math.round(done/possible*100)+'%']);
+      if(possible>0){
+        resRows.push([proj.name,proj.type,proj.super,proj.startDate||'—',proj.endDate||'En curso',
+          `${MONTHS[m]} ${y}`,dp,done,possible-done,possible,Math.round(done/possible*100)+'%']);
+      }
     }
   });
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(resRows),'Resumen');
-  // DETALLE
-  const detRows=[['Proyecto','Estado','Superintendente','Fecha','Form','Completado','Por','Hora','Nota']];
+
+  const detH=['Proyecto','Superintendente','Fecha','Form','Completado','Por','Hora','Nota'];
+  const detRows=[detH];
   projects.forEach(proj=>{
     Object.entries(records).forEach(([k,v])=>{
       const[pid,date,fk]=k.split('|');
       if(pid!==proj.id) return;
-      detRows.push([proj.name,getStateDisplayName(proj),proj.super,date,formLabel(fk),v.done?'Sí':'No',v.by||'—',v.time||'—',v.note||'']);
+      detRows.push([proj.name,proj.super,date,FORM_LABELS[fk]||fk,v.done?'Sí':'No',v.by||'—',v.time||'—',v.note||'']);
     });
   });
-  detRows.sort((a,b)=>a[3]>b[3]?-1:1);
+  detRows.sort((a,b)=>a[2]>b[2]?-1:1);
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(detRows),'Detalle');
-  // SUPERINTENDENTES
-  const superRows=[['Superintendente','Proyectos','Mes','Forms Hechos','Forms Perdidos','Toolbox','Daily AM','Daily PM','Cumplimiento %']];
-  [...new Set(projects.map(p=>p.super))].forEach(sn=>{
+
+  const superH=['Superintendente','Proyectos','Mes','Forms Hechos','Forms Perdidos','Toolbox','Daily AM','Daily PM','Cumplimiento %'];
+  const superRows=[superH];
+  const superNames=[...new Set(projects.map(p=>p.super))];
+  superNames.forEach(sn=>{
     const myP=projects.filter(p=>p.super===sn);
     for(let mi=0;mi<6;mi++){
       const d=new Date(now.getFullYear(),now.getMonth()-mi,1);
@@ -1412,10 +1224,12 @@ function exportXLSX(){
       viewYear=y;viewMonth=m;
       let tDone=0,tPoss=0,tb=0,am=0,pm=0;
       myP.forEach(proj=>{
-        const range=activeDayRange(proj);if(!range) return;
+        const range=activeDayRange(proj);
+        if(!range) return;
         const{startDay,endDay}=range;
         for(let dd=startDay;dd<=endDay;dd++){
-          const ds=`${y}-${pad(m+1)}-${pad(dd)}`;tPoss+=3;
+          const ds=`${y}-${pad(m+1)}-${pad(dd)}`;
+          tPoss+=3;
           if(getForm(proj.id,ds,'toolbox')?.done){tDone++;tb++;}
           if(getForm(proj.id,ds,'am')?.done){tDone++;am++;}
           if(getForm(proj.id,ds,'pm')?.done){tDone++;pm++;}
@@ -1426,17 +1240,6 @@ function exportXLSX(){
     }
   });
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(superRows),'Superintendentes');
-  // ESTADOS
-  const estRows=[['Estado','Proyecto','Tipo','Superintendente','Inicio (definido)','Inicio (primer form)','Fin (definido)','Fin (último form)','Duración (días)','Total Forms','Completados','Perdidos','Cumplimiento %']];
-  projects.forEach(proj=>{
-    const{firstDate,lastDate}=getProjectTimeline(proj.id);
-    const allKeys=Object.keys(records).filter(k=>k.startsWith(proj.id+'|'));
-    const allDone=allKeys.filter(k=>records[k]?.done===true).length;
-    const allPct=allKeys.length>0?Math.round(allDone/allKeys.length*100):0;
-    const duration=proj.startDate&&proj.endDate?calcDaysBetween(proj.startDate,proj.endDate):firstDate&&lastDate?calcDaysBetween(firstDate,lastDate):'—';
-    estRows.push([getStateDisplayName(proj),proj.name,proj.type||'—',proj.super,proj.startDate||'—',firstDate||'—',proj.endDate||'En curso',lastDate||'—',duration,allKeys.length,allDone,allKeys.length-allDone,allPct+'%']);
-  });
-  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(estRows),'Estados');
 
   XLSX.writeFile(wb,`forms-tracker-${now.toISOString().split('T')[0]}.xlsx`);
 }
