@@ -181,8 +181,11 @@
 
   .hist-month-btn { font-size:11px; font-family:'Inter',sans-serif; padding:4px 10px; border-radius:99px; border:1px solid #e0e0e0; background:#fafaf8; color:#888; cursor:pointer; transition:all 0.12s; }
   .hist-month-btn:hover { border-color:#bbb; color:#444; }
-  .hist-month-btn.active { background:#1a1a1a; color:#fff; border-color:#1a1a1a; } border-radius: 6px; cursor: pointer; font-family: 'Inter', sans-serif; padding: 5px 10px; transition: all 0.12s; white-space: nowrap; }
-  .btn-add-form:hover { color: #1a1a1a; border-color: #aaa; }
+  .hist-month-btn.active { background:#1a1a1a; color:#fff; border-color:#1a1a1a; }
+  .btn-add-form { font-size:11px; color:#aaa; background:none; border:1px dashed #ddd; border-radius:6px; cursor:pointer; font-family:'Inter',sans-serif; padding:5px 10px; transition:all 0.12s; white-space:nowrap; }
+  .btn-add-form:hover { color:#1a1a1a; border-color:#aaa; }
+  .proj-card.completed { opacity:0.55; filter:grayscale(30%); order:999; }
+  .completed-badge { font-size:10px; font-weight:700; color:#c62828; background:#fff0f0; border:1px solid #ffcdd2; border-radius:99px; padding:2px 8px; margin-left:6px; letter-spacing:0.3px; vertical-align:middle; }
   .custom-forms-row { display: flex; flex-wrap: wrap; gap: 1px; background: #f0f0eb; border-top: 1px solid #f0f0eb; }
   .custom-form-cell { flex: 1; min-width: 120px; background: #fff; padding: 10px 14px; cursor: pointer; border: none; text-align: left; font-family: 'Inter', sans-serif; transition: background 0.12s; }
   .custom-form-cell:hover { background: #fafaf8; }
@@ -617,12 +620,21 @@ function renderProyectos(isCur){
     </div><div class="add-card" onclick="openAddModal()">+ Agregar proyecto</div>`;
     return;
   }
-  panel.innerHTML=projects.map(p=>renderCard(p,isCur)).join('')
+  // active projects first, completed at the bottom
+  const active=projects.filter(p=>!isCompleted(p));
+  const completed=projects.filter(p=>isCompleted(p));
+  panel.innerHTML=[...active,...completed].map(p=>renderCard(p,isCur)).join('')
     +`<div class="add-card" onclick="openAddModal()">+ Agregar proyecto</div>`;
+}
+
+function isCompleted(proj){
+  if(!proj.endDate) return false;
+  return new Date(proj.endDate) < now;
 }
 
 function renderCard(proj,isCur){
   const tk=todayStr();
+  const completed=isCompleted(proj);
   const{done,possible,missed,pct,dp,startDay,endDay}=monthStats(proj.id);
   const{tb,am,pm}=formDetail(proj.id);
   const pctColor=pct>=80?'#2e7d32':pct>=50?'#f57f17':'#c62828';
@@ -632,7 +644,7 @@ function renderCard(proj,isCur){
   const pf=getForm(proj.id,tk,'pm');
   const todayDone=[tf,af,pf].filter(f=>f?.done).length;
   let bc='tbgr',bt='Sin marcar';
-  if(isCur&&endDay>=now.getDate()&&startDay<=now.getDate()){
+  if(isCur&&!completed&&endDay>=now.getDate()&&startDay<=now.getDate()){
     bc=todayDone===3?'tbg':todayDone===0?'tbr':'tby'; bt=`Hoy ${todayDone}/3`;
   }
 
@@ -649,7 +661,7 @@ function renderCard(proj,isCur){
   for(let d=1;d<=totalDays;d++){
     const ds=`${viewYear}-${pad(viewMonth+1)}-${pad(d)}`;
     let cls;
-    if(d<startDay||d>endDay) cls='pre'; // outside project range
+    if(d<startDay||d>endDay) cls='pre';
     else if(d>now.getDate()&&viewYear===now.getFullYear()&&viewMonth===now.getMonth()) cls='fut';
     else{
       const t=getForm(proj.id,ds,'toolbox');
@@ -671,15 +683,15 @@ function renderCard(proj,isCur){
     return fCell(proj.id,tk,k,f,true);
   }).join('');
 
-  return `<div class="proj-card" style="${!isActive?'opacity:0.6':''}">
+  return `<div class="proj-card${completed?' completed':''}">
     <div class="proj-header">
       <div>
-        <div class="proj-name">${proj.name} <span class="proj-type">· ${proj.type}</span></div>
+        <div class="proj-name">${proj.name} <span class="proj-type">· ${proj.type}</span>${completed?'<span class="completed-badge">COMPLETED</span>':''}</div>
         <div class="proj-meta">👷 ${proj.super}${proj.state?`<span class="state-badge ${STATE_CLASS[proj.state]||'sb-other'}">${proj.state==='other'?(proj.stateLabel||'Otro'):STATE_LABELS[proj.state]||proj.state}</span>`:''}<span class="edit-link" onclick="openEditModal('${proj.id}')">✎ editar</span><span class="delete-link" onclick="openDelModal('${proj.id}')"> ✕ eliminar</span></div>
         ${datesStr?`<div class="proj-dates">${datesStr}</div>`:''}
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
-        ${isCur?`<span class="today-badge ${bc}">${bt}</span>`:''}
+        ${isCur&&!completed?`<span class="today-badge ${bc}">${bt}</span>`:''}
         <button class="btn-add-form" onclick="openCustomFormModal('${proj.id}')">+ Form</button>
       </div>
     </div>
@@ -839,9 +851,30 @@ function renderHistForMonth(projId,y,m,body){
 }
 
 // ── SUPER TAB ──────────────────────────────────────────
+function superInitial(name){ return name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase(); }
+const SUPER_COLORS=['#1E2235','#b45309','#7c3aed','#0e7490','#15803d','#c2410c','#6d28d9','#0369a1'];
+function superColor(name){ let h=0; for(let c of name) h=(h*31+c.charCodeAt(0))%SUPER_COLORS.length; return SUPER_COLORS[h]; }
+
+function toggleSuperCard(name){
+  const body=document.getElementById('super-body-'+btoa(name).replace(/=/g,''));
+  const arrow=document.getElementById('super-arrow-'+btoa(name).replace(/=/g,''));
+  if(!body) return;
+  const open=body.style.display!=='none';
+  body.style.display=open?'none':'block';
+  if(arrow) arrow.textContent=open?'▼':'▲';
+}
+
 function renderSuperintendentes(){
   const panel=document.getElementById('panel-superintendentes');
-  const superNames=[...new Set(projects.map(p=>p.super))].filter(Boolean);
+
+  // collect ALL supers — assigned + anyone who completed a form
+  const superSet=new Set(projects.map(p=>p.super).filter(Boolean));
+  Object.keys(records).forEach(k=>{
+    const by=records[k]?.by;
+    if(by) superSet.add(by);
+  });
+  const superNames=[...superSet].sort();
+
   if(!superNames.length){
     panel.innerHTML=`<div style="text-align:center;padding:60px 20px;color:#aaa;">
       <div style="font-size:32px;margin-bottom:12px;">👷</div>
@@ -850,13 +883,14 @@ function renderSuperintendentes(){
     return;
   }
 
-  const cards=superNames.map(superName=>{
+  const items=superNames.map(superName=>{
+    const sid=btoa(superName).replace(/=/g,'');
     const myProjects=projects.filter(p=>p.super===superName);
+    // also count forms completed by this person on ANY project
+    const allRecordsByThis=Object.keys(records).filter(k=>records[k]?.by===superName);
 
-    // evaluate per project over full duration
+    // full stats per project
     const projStats=myProjects.map(proj=>{
-      const allKeys=Object.keys(records).filter(k=>k.startsWith(proj.id+'|'));
-      // get all months this project has records in
       const months=getProjectMonths(proj);
       let done=0,possible=0,tb=0,am=0,pm=0,dp=0;
       months.forEach(({y,m})=>{
@@ -867,13 +901,10 @@ function renderSuperintendentes(){
           const{startDay,endDay}=range;
           for(let d=startDay;d<=endDay;d++){
             const ds=`${y}-${pad(m+1)}-${pad(d)}`;
-            possible+=3; dp++;
-            const tF=getForm(proj.id,ds,'toolbox');
-            const aF=getForm(proj.id,ds,'am');
-            const pF=getForm(proj.id,ds,'pm');
-            if(tF?.done){done++;tb++;}
-            if(aF?.done){done++;am++;}
-            if(pF?.done){done++;pm++;}
+            possible+=3;dp++;
+            if(getForm(proj.id,ds,'toolbox')?.done){done++;tb++;}
+            if(getForm(proj.id,ds,'am')?.done){done++;am++;}
+            if(getForm(proj.id,ds,'pm')?.done){done++;pm++;}
           }
         }
         viewYear=savedY;viewMonth=savedM;
@@ -883,49 +914,64 @@ function renderSuperintendentes(){
 
     const totalDone=projStats.reduce((s,p)=>s+p.done,0);
     const totalPoss=projStats.reduce((s,p)=>s+p.possible,0);
-    const totalDp=projStats.reduce((s,p)=>s+p.dp,0);
     const pct=totalPoss>0?Math.round(totalDone/totalPoss*100):0;
     const pctColor=pct>=80?'#2e7d32':pct>=50?'#f57f17':'#c62828';
     const barColor=pct>=80?'#4caf50':pct>=50?'#ffc107':'#ef5350';
+    const color=superColor(superName);
+    const initials=superInitial(superName);
 
-    const projBreakdown=projStats.map(({proj,done,possible,tb,am,pm,dp})=>{
+    // project cards inside
+    const projCards=projStats.map(({proj,done,possible,tb,am,pm,dp})=>{
       const p=possible>0?Math.round(done/possible*100):0;
       const c=p>=80?'#2e7d32':p>=50?'#f57f17':'#c62828';
-      return `<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #f5f5f0;font-size:12px;">
-        <span style="color:#555;font-weight:500;">${proj.name}</span>
-        <span style="display:flex;gap:10px;align-items:center;">
-          <span style="color:#aaa;font-size:11px;">TB:${tb} AM:${am} PM:${pm}</span>
-          <span style="font-weight:600;color:${c};">${p}%</span>
-        </span>
+      const bar=p>=80?'#4caf50':p>=50?'#ffc107':'#ef5350';
+      const comp=isCompleted(proj);
+      return `<div style="background:#fafaf8;border:1px solid #e8e8e3;border-radius:10px;padding:12px 14px;margin-bottom:8px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+          <div>
+            <div style="font-size:13px;font-weight:600;">${proj.name}${comp?'<span style="font-size:10px;color:#c62828;background:#fff0f0;border:1px solid #ffcdd2;border-radius:99px;padding:1px 6px;margin-left:6px;">COMPLETED</span>':''}</div>
+            <div style="font-size:11px;color:#aaa;margin-top:2px;">${proj.type}</div>
+          </div>
+          <div style="font-size:16px;font-weight:700;color:${c};">${p}%</div>
+        </div>
+        <div style="height:3px;background:#f0f0eb;border-radius:99px;margin-bottom:8px;"><div style="height:100%;width:${p}%;background:${bar};border-radius:99px;"></div></div>
+        <div style="display:flex;gap:12px;font-size:11px;color:#aaa;">
+          <span>✓ ${done} hechos</span>
+          <span>✗ ${possible-done} perdidos</span>
+          <span style="margin-left:auto;">TB:${tb} AM:${am} PM:${pm}</span>
+        </div>
       </div>`;
     }).join('');
 
-    return `<div class="super-card">
-      <div class="super-card-name">👷 ${superName}</div>
-      <div class="super-card-projects">${myProjects.length} proyecto${myProjects.length!==1?'s':''}: ${myProjects.map(p=>p.name).join(', ')}</div>
-      <div class="super-stat-row">
-        <span class="super-stat-label">Cumplimiento total del proyecto</span>
-        <span class="super-stat-val" style="color:${pctColor};">${pct}%</span>
+    // forms done on other projects (not assigned but completed)
+    const otherForms=allRecordsByThis.filter(k=>{
+      const pid=k.split('|')[0];
+      return !myProjects.find(p=>p.id===pid);
+    }).length;
+
+    return `<div style="border-bottom:1px solid #f0f0eb;">
+      <div onclick="toggleSuperCard('${superName}')" style="display:flex;align-items:center;gap:12px;padding:14px 0;cursor:pointer;user-select:none;">
+        <div style="width:40px;height:40px;border-radius:50%;background:${color};color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">${initials}</div>
+        <div style="flex:1;">
+          <div style="font-size:14px;font-weight:600;">${superName}</div>
+          <div style="font-size:12px;color:#aaa;margin-top:1px;">${myProjects.length} proyecto${myProjects.length!==1?'s':''}${otherForms>0?` · ${otherForms} form${otherForms!==1?'s':''} en otros proyectos`:''}</div>
+        </div>
+        <div style="font-size:15px;font-weight:700;color:${pctColor};margin-right:8px;">${pct}%</div>
+        <span id="super-arrow-${sid}" style="font-size:11px;color:#ccc;">▼</span>
       </div>
-      <div class="super-pbar"><div class="super-pbar-fill" style="width:${pct}%;background:${barColor};"></div></div>
-      <div class="super-stat-row" style="margin-bottom:10px;">
-        <span style="font-size:12px;color:#4caf50;">✓ ${totalDone} hechos</span>
-        <span style="font-size:12px;color:#ef5350;">✗ ${totalPoss-totalDone} perdidos</span>
-        <span style="font-size:12px;color:#888;">${totalPoss} total</span>
-      </div>
-      ${projStats.length>1?`<div style="margin-top:4px;">${projBreakdown}</div>`:''}
-      <div class="super-form-breakdown" style="margin-top:10px;">
-        <div class="sfb"><div class="sfb-label">Toolbox</div>
-          <div class="sfb-val" style="color:${projStats.reduce((s,p)=>s+p.tb,0)/Math.max(totalDp,1)>=0.8?'#2e7d32':'#c62828'};">${projStats.reduce((s,p)=>s+p.tb,0)}/${totalDp}</div></div>
-        <div class="sfb"><div class="sfb-label">Daily AM</div>
-          <div class="sfb-val" style="color:${projStats.reduce((s,p)=>s+p.am,0)/Math.max(totalDp,1)>=0.8?'#2e7d32':'#c62828'};">${projStats.reduce((s,p)=>s+p.am,0)}/${totalDp}</div></div>
-        <div class="sfb"><div class="sfb-label">Daily PM</div>
-          <div class="sfb-val" style="color:${projStats.reduce((s,p)=>s+p.pm,0)/Math.max(totalDp,1)>=0.8?'#2e7d32':'#c62828'};">${projStats.reduce((s,p)=>s+p.pm,0)}/${totalDp}</div></div>
+      <div id="super-body-${sid}" style="display:none;padding-bottom:14px;">
+        <div style="height:3px;background:#f0f0eb;border-radius:99px;margin-bottom:12px;"><div style="height:100%;width:${pct}%;background:${barColor};border-radius:99px;"></div></div>
+        <div style="display:flex;gap:16px;font-size:12px;margin-bottom:12px;">
+          <span style="color:#4caf50;">✓ ${totalDone} hechos</span>
+          <span style="color:#ef5350;">✗ ${totalPoss-totalDone} perdidos</span>
+          <span style="color:#888;">${totalPoss} total</span>
+        </div>
+        ${projCards}
       </div>
     </div>`;
   }).join('');
 
-  panel.innerHTML=`<div class="super-summary-grid">${cards}</div>`;
+  panel.innerHTML=`<div style="padding:0 4px;">${items}</div>`;
 }
 
 // ── SUPER LIST UI ──────────────────────────────────────
