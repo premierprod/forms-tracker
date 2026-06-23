@@ -210,6 +210,7 @@
         <select class="btn-top" id="month-sel" onchange="onMonthChange()" style="cursor:pointer;"></select>
         <button class="btn-top green" onclick="exportXLSX()">↓ XLSX</button>
         <button class="btn-top" onclick="loadData()">↻ Actualizar</button>
+        <button class="btn-top" onclick="openImportModal()">↑ Importar forms</button>
         <button class="btn-top dark" onclick="openAddModal()">+ Proyecto</button>
       </div>
     </div>
@@ -379,6 +380,37 @@
   </div>
 </div>
 
+<!-- MODAL: Importar forms JSON -->
+<div class="overlay" id="modal-import">
+  <div class="modal">
+    <div class="modal-title">Importar forms</div>
+    <div class="flbl">PROYECTO</div>
+    <select class="finp" id="import-proj-sel" onchange="onImportProjChange()">
+      <option value="">— Selecciona un proyecto —</option>
+    </select>
+    <div id="import-json-wrap" style="display:none;margin-top:14px;">
+      <div class="flbl">PEGA EL JSON AQUÍ</div>
+      <textarea class="finp" id="import-json" style="min-height:160px;resize:vertical;font-family:monospace;font-size:12px;line-height:1.5;" placeholder='[
+  {"date":"2026-06-17","formKey":"am","time":"6:31 PM","by":"David Escheik"},
+  {"date":"2026-06-17","formKey":"toolbox","time":"6:30 PM","by":"David Escheik"},
+  {"date":"2026-06-17","formKey":"pm","time":"7:00 PM","by":"David Escheik"},
+  {"date":"2026-06-17","formKey":"custom_Safety_Inspection","time":"8:00 AM","by":"David Escheik"}
+]'></textarea>
+      <div style="font-size:11px;color:#aaa;margin-top:6px;line-height:1.8;">
+        <b>formKey estándar:</b> <code style="background:#f0f0eb;padding:1px 5px;border-radius:4px;">toolbox</code> <code style="background:#f0f0eb;padding:1px 5px;border-radius:4px;">am</code> <code style="background:#f0f0eb;padding:1px 5px;border-radius:4px;">pm</code><br>
+        <b>Form personalizado:</b> <code style="background:#f0f0eb;padding:1px 5px;border-radius:4px;">custom_Nombre_Del_Form</code> (reemplaza espacios con _)<br>
+        <b>date:</b> formato YYYY-MM-DD · <b>time:</b> "H:MM AM/PM" · <b>by:</b> nombre del superintendent
+      </div>
+      <div id="import-preview" style="display:none;margin-top:12px;background:#f5f5f0;border-radius:8px;padding:10px 12px;font-size:12px;color:#555;line-height:1.6;"></div>
+    </div>
+    <div class="modal-actions" style="margin-top:16px;">
+      <button class="btn btn-sec" onclick="closeModal('modal-import')">Cancelar</button>
+      <button class="btn btn-pri" id="btn-import-preview" onclick="previewImport()" style="display:none;">Vista previa</button>
+      <button class="btn btn-pri" id="btn-import-save" onclick="saveImport()" style="display:none;background:#2e7d32;">Guardar</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ── STORAGE ────────────────────────────────────────────
 const SK_PROJECTS = 'formtrack_projects_v4';
@@ -406,7 +438,15 @@ const STATE_LABELS = { illinois:'Illinois', dmv:'DMV', florida:'Florida' };
 const STATE_CLASS  = { illinois:'sb-il', dmv:'sb-dmv', florida:'sb-fl' };
 const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const FORM_LABELS = { toolbox:'Toolbox Talk', am:'Daily AM', pm:'Daily PM' };
-function formLabel(key){ return FORM_LABELS[key] || (key.startsWith('custom_') ? key.replace(/^custom_[^_]+_/,'').replace(/_/g,' ') : key); }
+function formLabel(key){ 
+  if(FORM_LABELS[key]) return FORM_LABELS[key];
+  if(key.startsWith('custom_')){
+    // handles both custom_TIMESTAMP_Name and custom_Name
+    const withoutPrefix = key.replace(/^custom_[a-z0-9]+_/,'') || key.replace(/^custom_/,'');
+    return withoutPrefix.replace(/_/g,' ');
+  }
+  return key;
+}
 const PRESETS = {
   toolbox:['6:00 AM','6:30 AM','7:00 AM','7:30 AM'],
   am:     ['7:00 AM','7:30 AM','8:00 AM','8:30 AM'],
@@ -1175,6 +1215,88 @@ async function saveForm(){
     await saveRecords();
     closeModal('modal-form');render();
     setSyncUI('ok','Guardado ✓');
+  }catch(e){alert('Error al guardar.');}
+  finally{btn.disabled=false;btn.textContent='Guardar';}
+}
+
+// ── IMPORT JSON ────────────────────────────────────────
+function openImportModal(){
+  const sel=document.getElementById('import-proj-sel');
+  sel.innerHTML='<option value="">— Selecciona un proyecto —</option>';
+  projects.forEach(p=>{
+    const o=document.createElement('option');
+    o.value=p.id;
+    o.textContent=p.name+(p.state?` (${p.stateLabel||STATE_LABELS[p.state]||p.state})`:'' );
+    sel.appendChild(o);
+  });
+  document.getElementById('import-json-wrap').style.display='none';
+  document.getElementById('import-json').value='';
+  document.getElementById('import-preview').style.display='none';
+  document.getElementById('btn-import-preview').style.display='none';
+  document.getElementById('btn-import-save').style.display='none';
+  openModal('modal-import');
+}
+function onImportProjChange(){
+  const val=document.getElementById('import-proj-sel').value;
+  document.getElementById('import-json-wrap').style.display=val?'block':'none';
+  document.getElementById('btn-import-preview').style.display=val?'inline-flex':'none';
+  document.getElementById('btn-import-save').style.display='none';
+  document.getElementById('import-preview').style.display='none';
+}
+let importParsed=[];
+function previewImport(){
+  const raw=document.getElementById('import-json').value.trim();
+  const projId=document.getElementById('import-proj-sel').value;
+  const proj=projects.find(p=>p.id===projId);
+  const MONTHS=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  const LABELS={toolbox:'Toolbox Talk',am:'Daily AM',pm:'Daily PM'};
+  try{
+    importParsed=JSON.parse(raw);
+    if(!Array.isArray(importParsed)||!importParsed.length) throw new Error('vacío');
+    let newCount=0,skipCount=0;
+    const lines=importParsed.map(f=>{
+      const key=`${projId}|${f.date}|${f.formKey}`;
+      const exists=!!records[key];
+      if(exists) skipCount++; else newCount++;
+      const[y,m,d]=f.date.split('-');
+      const label=LABELS[f.formKey]||f.formKey;
+      const dl=`${parseInt(d)} ${MONTHS[parseInt(m)-1]}`;
+      return `${exists?'⟳ ya existe':'✓ nuevo'} · ${dl} · ${label}${f.time?' · '+f.time:''}${f.by?' · '+f.by:''}`;
+    });
+    const prev=document.getElementById('import-preview');
+    prev.innerHTML=`<b>${newCount} nuevos</b>, ${skipCount} ya existían<br><br>`+lines.join('<br>');
+    prev.style.display='block';
+    document.getElementById('btn-import-save').style.display=newCount>0?'inline-flex':'none';
+  }catch(e){
+    const prev=document.getElementById('import-preview');
+    prev.innerHTML='<span style="color:#c62828;">JSON inválido — revisa el formato.</span>';
+    prev.style.display='block';
+    document.getElementById('btn-import-save').style.display='none';
+  }
+}
+async function saveImport(){
+  const projId=document.getElementById('import-proj-sel').value;
+  const proj=projects.find(p=>p.id===projId);
+  if(!proj||!importParsed.length) return;
+  const btn=document.getElementById('btn-import-save');
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Guardando...';
+  try{
+    let saved=0;
+    importParsed.forEach(f=>{
+      // normalize formKey — if custom, ensure it starts with custom_
+      let fk=f.formKey;
+      if(fk&&!['toolbox','am','pm'].includes(fk)&&!fk.startsWith('custom_')){
+        fk='custom_'+fk.replace(/\s+/g,'_');
+      }
+      const key=`${projId}|${f.date}|${fk}`;
+      if(!records[key]){
+        records[key]={done:true,by:f.by||proj.super||'',time:f.time||'—',note:''};
+        saved++;
+      }
+    });
+    await saveRecords();
+    closeModal('modal-import');render();
+    setSyncUI('ok',`✓ ${saved} form${saved!==1?'s':''} importados`);
   }catch(e){alert('Error al guardar.');}
   finally{btn.disabled=false;btn.textContent='Guardar';}
 }
