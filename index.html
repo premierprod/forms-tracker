@@ -552,25 +552,33 @@ function switchTab(tab){
 }
 
 // ── STATS ──────────────────────────────────────────────
+function isWeekend(y,m,d){ const day=new Date(y,m,d).getDay(); return day===0||day===6; }
+
 function monthStats(projId){
   const proj=projects.find(p=>p.id===projId);
   const range=proj?activeDayRange(proj):null;
   if(!range) return {done:0,possible:0,missed:0,pct:0,dp:0,startDay:1,endDay:0};
   const{startDay,endDay}=range;
   let done=0,possible=0;
-  // get all form keys including custom ones for this project
-  const customKeys=getCustomKeys(projId);
   for(let d=startDay;d<=endDay;d++){
     const ds=`${viewYear}-${pad(viewMonth+1)}-${pad(d)}`;
-    possible+=3;
-    if(getForm(projId,ds,'toolbox')?.done) done++;
-    if(getForm(projId,ds,'am')?.done) done++;
-    if(getForm(projId,ds,'pm')?.done) done++;
-    // custom forms on this day
-    customKeys.forEach(k=>{
-      const f=getForm(projId,ds,k);
-      if(f!==null){possible++;if(f.done)done++;}
-    });
+    const wknd=isWeekend(viewYear,viewMonth,d);
+    const tF=getForm(projId,ds,'toolbox');
+    const aF=getForm(projId,ds,'am');
+    const pF=getForm(projId,ds,'pm');
+    // custom forms this day
+    const dayCustomKeys=Object.keys(records).filter(k=>{const[pid,kds,fk]=k.split('|');return pid===projId&&kds===ds&&fk.startsWith('custom_');});
+    if(wknd){
+      // weekends: only count forms that were actually marked (done or not)
+      [['toolbox',tF],['am',aF],['pm',pF]].forEach(([,f])=>{if(f!==null&&f!==undefined){possible++;if(f?.done)done++;}});
+      dayCustomKeys.forEach(k=>{possible++;if(records[k]?.done)done++;});
+    } else {
+      possible+=3;
+      if(tF?.done) done++;
+      if(aF?.done) done++;
+      if(pF?.done) done++;
+      dayCustomKeys.forEach(k=>{possible++;if(records[k]?.done)done++;});
+    }
   }
   return{done,possible,missed:possible-done,pct:possible>0?Math.round(done/possible*100):0,dp:endDay-startDay+1,startDay,endDay};
 }
@@ -675,7 +683,9 @@ function renderCard(proj,isCur){
       const a=getForm(proj.id,ds,'am');
       const pp=getForm(proj.id,ds,'pm');
       const c=[t,a,pp].filter(f=>f?.done).length;
-      cls=!(t||a||pp)?'miss':c===3?'full':c>=1?'part':'miss';
+      const wknd=isWeekend(viewYear,viewMonth,d);
+      if(wknd&&!(t||a||pp)) cls='pre'; // weekend with no forms = grey like out-of-range
+      else cls=!(t||a||pp)?'miss':c===3?'full':c>=1?'part':'miss';
     }
     cal+=`<div class="md ${cls}" title="Día ${d}"></div>`;
   }
@@ -765,17 +775,26 @@ function renderHistTable(projId){
     const t=getForm(projId,ds,'toolbox');
     const a=getForm(projId,ds,'am');
     const pp=getForm(projId,ds,'pm');
+    const wknd=isWeekend(viewYear,viewMonth,d);
+    const anyFormsToday=t||a||pp||customKeys.some(k=>getForm(projId,ds,k));
+    const rowBg=wknd&&!anyFormsToday?'background:#fafaf8;':'';
+    const dateColor=wknd?'color:#ccc;':'color:#888;';
+    const wkndTag=wknd?` <span style="font-size:9px;color:#ccc;">${new Date(viewYear,viewMonth,d).getDay()===6?'SAT':'SUN'}</span>`:'';
     const customChips=customKeys.map(k=>{
       const f=getForm(projId,ds,k);
       return f?`<span style="font-size:10px;color:#888;margin-right:4px;">${formLabel(k)}:</span>${hChip(f,projId,ds,k)}`:'';
     }).filter(Boolean).join(' ');
-    rows+=`<tr class="${isT?'tr-today':''}">
-      <td style="color:#888;white-space:nowrap;">${String(d).padStart(2,'0')} ${MONTHS[viewMonth].slice(0,3)}</td>
-      <td>${hChip(t,projId,ds,'toolbox')}</td>
-      <td>${hChip(a,projId,ds,'am')}</td>
-      <td>${hChip(pp,projId,ds,'pm')}</td>
+    // weekend with no forms: show greyed out dashes, no "Marcar"
+    const chip=(form,key)=>wknd&&!anyFormsToday
+      ?`<span style="color:#e0e0e0;font-size:12px;">—</span>`
+      :hChip(form,projId,ds,key);
+    rows+=`<tr class="${isT?'tr-today':''}" style="${rowBg}">
+      <td style="${dateColor}white-space:nowrap;">${String(d).padStart(2,'0')} ${MONTHS[viewMonth].slice(0,3)}${wkndTag}</td>
+      <td>${chip(t,'toolbox')}</td>
+      <td>${chip(a,'am')}</td>
+      <td>${chip(pp,'pm')}</td>
       ${customChips?`<td style="font-size:11px;">${customChips}</td>`:'<td></td>'}
-      <td>${dScore(t,a,pp)}</td>
+      <td>${wknd&&!anyFormsToday?'<span style="color:#e0e0e0;">—</span>':dScore(t,a,pp)}</td>
     </tr>`;
   }
   return `<div class="hist-wrap"><table class="hist-table">
