@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>"/>
 <title>Control de Forms</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -848,14 +849,19 @@ function toggleHist(projId){
     el.style.display='block';
     const proj=projects.find(p=>p.id===projId);
     const months=getProjectMonths(proj);
-    // build nav buttons
+    // for completed projects, default to the month the project ended, not current month
+    let defaultIdx=0;
+    if(proj.endDate){
+      const[ey,em]=proj.endDate.split('-').map(Number);
+      const found=months.findIndex(({y,m})=>y===ey&&m===em-1);
+      if(found!==-1) defaultIdx=found;
+    }
     nav.innerHTML=months.map(({y,m},i)=>`
-      <button class="hist-month-btn${i===0?' active':''}" onclick="switchHistMonth('${projId}',${y},${m},this)">
+      <button class="hist-month-btn${i===defaultIdx?' active':''}" onclick="switchHistMonth('${projId}',${y},${m},this)">
         ${MONTHS[m].slice(0,3)} ${y}
       </button>`).join('');
-    // show current month
-    const{y:cy,m:cm}=months[0];
-    renderHistForMonth(projId,cy,cm,body);
+    const{y:dy,m:dm}=months[defaultIdx];
+    renderHistForMonth(projId,dy,dm,body);
   } else {
     el.style.display='none';
   }
