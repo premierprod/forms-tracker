@@ -419,6 +419,7 @@
 // ── STORAGE ────────────────────────────────────────────
 const SK_PROJECTS = 'formtrack_projects_v4';
 const SK_RECORDS  = 'formtrack_records_v4';
+const SK_EXCLUDED = 'formtrack_excluded_v4';
 const API_URL = 'https://script.google.com/macros/s/AKfycbwp0KKlRQ4ERkHc-CNU84eVJ-QzYf0QIGeV14_PU9TT6MUX7Pd0bcncnZl_lLQL38ga/exec';
 
 async function cloudGet(key) {
@@ -465,7 +466,7 @@ const PRESETS = {
 };
 
 // ── STATE ──────────────────────────────────────────────
-let projects=[], records={};
+let projects=[], records={}, excluded={};
 let viewYear, viewMonth;
 const now=new Date();
 let activeTab='proyectos';
@@ -478,6 +479,14 @@ function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2
 function dateLabel(s){const[,m,d]=s.split('-');return `${parseInt(d)} ${MONTHS[parseInt(m)-1]}`;}
 function recKey(projId,date,fk){return `${projId}|${date}|${fk}`;}
 function getForm(pid,date,fk){return records[recKey(pid,date,fk)]||null;}
+function exKey(pid,date){return `${pid}|${date}`;}
+function isExcluded(pid,date){return !!excluded[exKey(pid,date)];}
+async function toggleExcludeDay(pid,date){
+  const k=exKey(pid,date);
+  if(excluded[k]) delete excluded[k]; else excluded[k]=true;
+  await saveExcluded();
+  render();
+}
 
 // Given project start/end dates and view month, return active day range
 function activeDayRange(proj){
@@ -516,13 +525,15 @@ async function loadData(){
   try{
     const p=await cloudGet(SK_PROJECTS);
     const r=await cloudGet(SK_RECORDS);
-    projects=p||[]; records=r||{};
+    const ex=await cloudGet(SK_EXCLUDED);
+    projects=p||[]; records=r||{}; excluded=ex||{};
     setSyncUI('ok',`Sincronizado · ${new Date().toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'})}`);
     render();
   }catch(e){setSyncUI('err','Error de conexión');render();}
 }
 async function saveProjects(){await cloudSet(SK_PROJECTS,projects);}
 async function saveRecords(){await cloudSet(SK_RECORDS,records);}
+async function saveExcluded(){await cloudSet(SK_EXCLUDED,excluded);}
 
 // ── MONTH SELECTOR ─────────────────────────────────────
 function buildMonthSel(){
@@ -560,9 +571,11 @@ function monthStats(projId){
   const range=proj?activeDayRange(proj):null;
   if(!range) return {done:0,possible:0,missed:0,pct:0,dp:0,startDay:1,endDay:0};
   const{startDay,endDay}=range;
-  let done=0,possible=0;
+  let done=0,possible=0,dp=0;
   for(let d=startDay;d<=endDay;d++){
     const ds=`${viewYear}-${pad(viewMonth+1)}-${pad(d)}`;
+    if(isExcluded(projId,ds)) continue; // día sin trabajo, no cuenta
+    dp++;
     const wknd=isWeekend(viewYear,viewMonth,d);
     const tF=getForm(projId,ds,'toolbox');
     const aF=getForm(projId,ds,'am');
@@ -581,7 +594,7 @@ function monthStats(projId){
       dayCustomKeys.forEach(k=>{possible++;if(records[k]?.done)done++;});
     }
   }
-  return{done,possible,missed:possible-done,pct:possible>0?Math.round(done/possible*100):0,dp:endDay-startDay+1,startDay,endDay};
+  return{done,possible,missed:possible-done,pct:possible>0?Math.round(done/possible*100):0,dp,startDay,endDay};
 }
 
 function getCustomKeys(projId){
@@ -599,14 +612,16 @@ function formDetail(projId){
   const range=proj?activeDayRange(proj):null;
   if(!range) return{tb:0,am:0,pm:0,dp:0};
   const{startDay,endDay}=range;
-  let tb=0,am=0,pm=0;
+  let tb=0,am=0,pm=0,dp=0;
   for(let d=startDay;d<=endDay;d++){
     const ds=`${viewYear}-${pad(viewMonth+1)}-${pad(d)}`;
+    if(isExcluded(projId,ds)) continue; // día sin trabajo, no cuenta
+    dp++;
     if(getForm(projId,ds,'toolbox')?.done) tb++;
     if(getForm(projId,ds,'am')?.done) am++;
     if(getForm(projId,ds,'pm')?.done) pm++;
   }
-  return{tb,am,pm,dp:endDay-startDay+1};
+  return{tb,am,pm,dp};
 }
 
 // ── RENDER ─────────────────────────────────────────────
@@ -678,6 +693,7 @@ function renderCard(proj,isCur){
     const ds=`${viewYear}-${pad(viewMonth+1)}-${pad(d)}`;
     let cls;
     if(d<startDay||d>endDay) cls='pre';
+    else if(isExcluded(proj.id,ds)) cls='pre';
     else if(d>now.getDate()&&viewYear===now.getFullYear()&&viewMonth===now.getMonth()) cls='fut';
     else{
       const t=getForm(proj.id,ds,'toolbox');
@@ -773,14 +789,24 @@ function renderHistTable(projId){
   for(let d=endDay;d>=startDay;d--){
     const ds=`${viewYear}-${pad(viewMonth+1)}-${pad(d)}`;
     const isT=ds===todayStr();
+    const wknd=isWeekend(viewYear,viewMonth,d);
+    const wkndTag=wknd?` <span style="font-size:9px;color:#ccc;">${new Date(viewYear,viewMonth,d).getDay()===6?'SAT':'SUN'}</span>`:'';
+    const dateColor=wknd?'color:#ccc;':'color:#888;';
+
+    if(isExcluded(projId,ds)){
+      rows+=`<tr style="opacity:.5;">
+        <td style="${dateColor}white-space:nowrap;">${String(d).padStart(2,'0')} ${MONTHS[viewMonth].slice(0,3)}${wkndTag}</td>
+        <td colspan="4" style="color:#bbb;font-size:12px;font-style:italic;">Día excluido — sin trabajo</td>
+        <td><button onclick="toggleExcludeDay('${projId}','${ds}')" title="Restaurar día" style="background:#eaf3de;color:#5a8a3a;border:none;border-radius:6px;padding:2px 9px;font-size:11px;cursor:pointer;">+ Restaurar</button></td>
+      </tr>`;
+      continue;
+    }
+
     const t=getForm(projId,ds,'toolbox');
     const a=getForm(projId,ds,'am');
     const pp=getForm(projId,ds,'pm');
-    const wknd=isWeekend(viewYear,viewMonth,d);
     const anyFormsToday=t||a||pp||customKeys.some(k=>getForm(projId,ds,k));
     const rowBg=wknd&&!anyFormsToday?'background:#fafaf8;':'';
-    const dateColor=wknd?'color:#ccc;':'color:#888;';
-    const wkndTag=wknd?` <span style="font-size:9px;color:#ccc;">${new Date(viewYear,viewMonth,d).getDay()===6?'SAT':'SUN'}</span>`:'';
     const customChips=customKeys.map(k=>{
       const f=getForm(projId,ds,k);
       return f?`<span style="font-size:10px;color:#888;margin-right:4px;">${formLabel(k)}:</span>${hChip(f,projId,ds,k)}`:'';
@@ -795,7 +821,10 @@ function renderHistTable(projId){
       <td>${chip(a,'am')}</td>
       <td>${chip(pp,'pm')}</td>
       ${customChips?`<td style="font-size:11px;">${customChips}</td>`:'<td></td>'}
-      <td>${wknd&&!anyFormsToday?'<span style="color:#e0e0e0;">—</span>':dScore(t,a,pp)}</td>
+      <td style="display:flex;align-items:center;gap:6px;">
+        <span>${wknd&&!anyFormsToday?'<span style="color:#e0e0e0;">—</span>':dScore(t,a,pp)}</span>
+        <button onclick="toggleExcludeDay('${projId}','${ds}')" title="Marcar día sin trabajo (excluir del conteo)" style="background:#fbeaea;color:#d98a8a;border:none;border-radius:5px;width:18px;height:18px;line-height:16px;font-size:13px;font-weight:600;cursor:pointer;padding:0;">−</button>
+      </td>
     </tr>`;
   }
   return `<div class="hist-wrap"><table class="hist-table">
