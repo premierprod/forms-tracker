@@ -710,8 +710,8 @@ function renderCard(proj,isCur){
 
   const isActive=endDay>=1&&startDay<=totalDays;
 
-  // custom forms for today
-  const customKeys=getCustomKeys(proj.id);
+  // custom forms: solo se muestran el día que fueron registrados, no son recurrentes
+  const customKeys=getCustomKeys(proj.id).filter(k=>getForm(proj.id,tk,k));
   const customCells=customKeys.map(k=>{
     const f=getForm(proj.id,tk,k);
     return fCell(proj.id,tk,k,f,true);
